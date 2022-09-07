@@ -1,4 +1,5 @@
-from calendar import calendar
+
+from ctypes import resize
 from sys import call_tracing, exec_prefix
 import time
 from typing import Literal
@@ -7,17 +8,35 @@ from telebot import types
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot.types import InputMediaPhoto
 import gspread
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+
+
+
 
 orders = []
 bot = telebot.TeleBot('5600966956:AAF-YStSKMZnF9aOEGKAPRdNFffTCYEya8s')
 gc = gspread.service_account(filename="clinny-361618-f313b3437739.json")
-calc_sheet_url = gc.open_by_url('https://docs.google.com/spreadsheets/d/115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=480424214')
-worksheet_calc = calc_sheet_url.get_worksheet(4)
-data_from_sheet = worksheet_calc.get_all_values()
-print(data_from_sheet)
+url = gc.open_by_url('https://docs.google.com/spreadsheets/d/115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=480424214')
 
 
+
+
+calendar = url.get_worksheet(5)
+
+calendar.update()
+
+
+def generate_sales_keyboard():
+    markup_sales = InlineKeyboardMarkup()
+    button_10_sale = InlineKeyboardButton('раз в две недели', callback_data='10')
+    button_15_sale = InlineKeyboardButton('раз в неделю', callback_data='15')
+    button_7_sale = InlineKeyboardButton('раз в месяц', callback_data= '7')
+    button_without_sale = InlineKeyboardButton('один раз или в первый раз', callback_data='0')
+    markup_sales.row(button_15_sale,button_10_sale)
+    markup_sales.row(button_7_sale,button_without_sale)
+
+    return markup_sales()
+
+ 
 def generate_calc_keyboard():
     markup_servise = InlineKeyboardMarkup()
     list_of_service = data_from_sheet[0]
@@ -29,8 +48,12 @@ def generate_calc_keyboard():
         markup_servise.row(btn1)
         markup_servise.row(btn2, btn3)
         counter += 1
+       
+    
     return markup_servise
 
+
+   
 def form_list_to_send(id, msg):
     global orders
     list_of_servise_to_user = []
@@ -49,7 +72,6 @@ def form_list_to_send(id, msg):
   
 
 def add_servise_for_user(number_of_servise,id):
-    print("ggggg")
     global orders
     for order in orders:
         if id == order[0]:
@@ -70,10 +92,17 @@ def edit_message(current_order):
     service =  current_order[1]
     all_time = current_order[2]
     all_prices = current_order[3]
-  
+    service = []
     for service_name in service:
-        string_servise = 'дополнительные  услуги:  ' + service_name + '\n'
+        string_servise ='дополнительные  услуги:  ' + service_name + '\n'
+        service.append(string_servise)
+
+    string_servise = ' \n'.join(service) 
     print(string_servise)
+
+        
+
+        
     for cleaning_time in all_time:
         total_time = float(cleaning_time)
      
@@ -85,7 +114,7 @@ def edit_message(current_order):
        
     string_price = 'стоймость уборки' + str(total_price)
     
-    text_to_edit = string_time + string_price
+    text_to_edit = string_servise + string_time + string_price
     print(text_to_edit)   
     bot.edit_message_text(text_to_edit, current_order[0], current_order[4], reply_markup=generate_calc_keyboard())
    
@@ -113,8 +142,6 @@ def remove_servise_for_user(number_of_servise, id):
     except:
         pass
     return(current_order)
-def send_info_to_user(list_for_send_to_user):
-    True
 
     
 def dt(s):
@@ -128,13 +155,7 @@ def fs(st):
 def start(message):
     if message.text == '/start':
         
-        msg =  bot.send_message(message.chat.id,"hi", reply_markup=generate_calc_keyboard())
-        form_list_to_send(message.chat.id, msg)
-
-    elif message.text == '/calendar':
-       calendar, step = DetailedTelegramCalendar().build()
-
-       bot.send_message(message.chat.id,f'Select {LSTEP[step]}',reply_markup=calendar)
+      bot.send_message()
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -145,8 +166,9 @@ def query_handler(call):
     flag = fs(call.data)
     data = dt(call.data)
     list_of_service = data_from_sheet[0]
+
+
     for counter in range(2, len(list_of_service)):
-        print(counter)
         if call.data  == '+'+ str(counter):
             add_servise_for_user(counter,id)
             edit_message(add_servise_for_user(counter,id))
@@ -157,7 +179,9 @@ def query_handler(call):
 
 
 
+
+
+
+
 print("Ready")
 bot.infinity_polling()
-
-
