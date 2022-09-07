@@ -47,7 +47,7 @@ def get_services_data_from_sheet():
 
 def take_order(bot, user_id):
     message_text = "Приветствуем в нашем сервисе клинига \"Нежные пальчики\""
-    message_id = bot.send_message(chat_id=user_id, text=message_text, reply_markup=draw_service_offer())
+    message_id = bot.send_message(chat_id=user_id, text=message_text, reply_markup=draw_service_offer()).message_id
 
     ServicesManager.set_services_types(tabel=get_services_data_from_sheet())
     new_order = Order(user_id=user_id, message_id=message_id)
