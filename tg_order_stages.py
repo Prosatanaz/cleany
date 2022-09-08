@@ -7,4 +7,5 @@ class OrderStage(Enum):
     SERVICES_CONFIRMATION = 2
     CALENDAR = 3
     CLIENT_CONTACTS = 4
+    
 

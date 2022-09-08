@@ -6,7 +6,8 @@ from tg_order_service import *
 from tg_messenger import TgMessenger
 from tg_messenger import BUTTON_VALUE_SEPARATOR
 
-
+def return_start_point_tg():
+    return 'TG'
 def start_tg_bot():
     print("start bot for Telegram")
     bot = telebot.TeleBot('5612156914:AAEiFzNR0KVrvYDE7OjnSbjiKJrtPCwW_N8')
