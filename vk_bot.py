@@ -14,8 +14,8 @@ def return_start_point_vk():
     
 def start_vk_bot():
     print('Start VK Bot')
-    GROUP_ID = '215429808'
-    GROUP_TOKEN = 'vk1.a.-OoF4Nyf_mvkHPLzJA4X_1npTgwmNNartyqUQAPculjCrmjUmjUgw9-IaJEomxOq3xuwqwvkRJHRPLaagmJPPx1O8AG9NSftAa0mgfPKkKOaJxfzdcS35IJhHdG3P4dy4yw7ak_h9bGuQkHkE2_3xq2G5dffG_q74AO-pcEbI9ISrXp2frwCfFOD314Blz1d'
+    GROUP_ID = '215415396'
+    GROUP_TOKEN = '5c098984da8e2e17630a5cbfd61d16152446a36f0578a4b61fe965a6b0ff1478eb948aeb420649748a298'
     API_VERSION = '5.130'
 
     HI = []
@@ -234,3 +234,5 @@ def start_vk_bot():
                     peer_id=event.object.peer_id,
                     keyboard=main_keyboard.get_keyboard(),
                     message="Вас приветствует cleanny.by!")
+
+start_vk_bot()

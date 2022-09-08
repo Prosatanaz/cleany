@@ -1,20 +1,23 @@
+
 from telebot import TeleBot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+import tg_messenger
 
 bot = TeleBot("5485478360:AAGsfep09KeFIEMXiSYFZ4g8Cs0TAOJeE3o")
+def generate_check_number_markup():
 
-markup_check_number = InlineKeyboardMarkup()
-markup_check_number.row(InlineKeyboardButton('да', callback_data='да'),
+    markup = InlineKeyboardMarkup()
+    markup.row(InlineKeyboardButton('да', callback_data='да'),
                         InlineKeyboardButton('нет', callback_data='нет'))
-
-markup_check_adress = InlineKeyboardMarkup()
-markup_check_adress.row(InlineKeyboardButton('да', callback_data='да1'),
+    return markup
+def generate_check_adress_markup():
+    markup = InlineKeyboardMarkup()
+    markup.row(InlineKeyboardButton('да', callback_data='да1'),
                         InlineKeyboardButton('нет', callback_data='нет1'))
+    return markup
 
-
-@bot.message_handler(content_types=['text'])
-def start(message):
-    if message.text == '/start':
+    #прикрути кнопку следуюшего щага
+if call.data == 'кнопка':
         print(message.chat.id)
         write_number(message.chat.id)
 
@@ -25,16 +28,8 @@ def write_number(id):
 
 
 def check_number(message):
-    next_step = bot.send_message(message.chat.id, ' это ваш телефон? ', reply_markup=markup_check_number)
+    bot.send_message(message.chat.id, ' это ваш телефон? ', reply_markup=generate_check_number_markup())
 
-
-# нужно положить number в order
-def confirm_number(message):
-    if message.text == 'да':
-
-        bot.register_next_step_handler(message, write_adress)
-    elif message.text == 'нет':
-        bot.register_next_step_handler(message, write_number)
 
 
 def write_adress(id):
@@ -43,15 +38,37 @@ def write_adress(id):
 
 
 def check_adress(message):
-    next_step = bot.send_message(message.chat.id, ' это ваш адрес? ', reply_markup=markup_check_adress)
+   
+    next_step = bot.send_message(message.chat.id, ' это ваш адрес? ', reply_markup=generate_check_adress_markup())
 
 
-#нужно положить adress в order
 
 
-#конечный метод        
-def poel_govna():
-    pass
+
+
+
+def payment_metod(id):
+    bot.send_message(id, 'выберите способ оплаты',reply_markup=generate_payment_markup(id))
+from order import Order,
+from payment_manager import paymentManager
+def generate_payment_markup(id,order):
+    #заглушка
+    order = Order()
+    #заглушка
+    datatime = order.datatime
+    price = order.get_total_price()
+
+    pay_url = paymentManager().get_pay_url(price, str(id), datatime )
+    markup = InlineKeyboardMarkup()
+    cash_button = InlineKeyboardButton('оплата наличными', callback_data='cash')
+    card_button = InlineKeyboardButton('оплата картой',callback_data='card')
+    online_button = InlineKeyboardButton('оплатить онлайн',url=pay_url,callback_data='online')
+    markup.row(cash_button,card_button)
+    markup.row(online_button)
+    return markup
+
+
+
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -59,12 +76,22 @@ def query_handler(call):
     bot.answer_callback_query(callback_query_id=call.id, )
     if call.data == 'да':
         write_adress(call.message.chat.id)
-    if call.data == 'нет':
+        #положить number в order
+    elif call.data == 'нет':
         write_number(call.message.chat.id)
-    if call.data == 'да1':
-        poel_govna()
-    if call.data == 'нет1':
+    elif call.data == 'да1':
+        #нужно положить adress в order
+        payment_metod(call.message.chat.id)
+    elif call.data == 'нет1':
         write_adress(call.message.chat.id)
+    elif call.data == 'cash':
+        #положить cash  В  order payment_metod 
+    elif call.data == 'card':
+        #положить card  В  order payment_metod
+    elif call.data == 'online':
+        #положить online в order  payment_metod 
+        #добавить статус оплаты     
+
              
 
 

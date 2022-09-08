@@ -42,8 +42,8 @@ class GoogleCalendar():
 
 calendarId = 'i7mlmtftm205o983g9f2kubsgo@group.calendar.google.com'
 obj = GoogleCalendar()
-start_time = '2022-09-08T09:00:00-07:00'
-end_time = '2022-09-08T09:00:00-09:00'
+start_time = '2022-09-08-9:00'
+end_time = '2022-09-08-10:00'
 description = 'fgdgdfg'
 obj.add_calendar(calendarId)
 print(obj.get_calendar(calendarId))
