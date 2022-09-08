@@ -11,7 +11,7 @@ class paymentManager:
     def get_pay_url(self, price, client_id, order_data):
         label = client_id + order_data
         quickpay = Quickpay(receiver="4100117957739405", quickpay_form="shop", targets="Sponsor this project",
-            paymentType="SB", sum=price, label=label, )
+                            paymentType="SB", sum=price, label=label, )
         pay_url = quickpay.base_url
         return pay_url
 

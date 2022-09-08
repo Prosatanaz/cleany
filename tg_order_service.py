@@ -12,6 +12,3 @@ def delete_order(user_id):
 
     order = OrdersManager.get_order(user_id)
     OrdersManager.remove_order(order)
-
-
-

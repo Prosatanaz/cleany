@@ -21,8 +21,7 @@ class ServicesManager:
     def set_basic_service(cls, tabel):
         # get first value row ignoring table header
         row = tabel[1]
-        cls.basic_service = BasicService(price=float(row[0]),
-                                         time=float(row[1]))
+        cls.basic_service = BasicService(price=float(row[0]), time=float(row[1]))
 
     @classmethod
     def set_extra_services(cls, tabel):
@@ -32,10 +31,7 @@ class ServicesManager:
         services = []
         service_id = 0
         for row in tabel:
-            new_service = ExtraService(service_id=service_id,
-                                       name=row[0],
-                                       price=float(row[1]),
-                                       time=float(row[2]),
+            new_service = ExtraService(service_id=service_id, name=row[0], price=float(row[1]), time=float(row[2]),
                                        message=row[3])
             services.append(new_service)
             service_id += 1

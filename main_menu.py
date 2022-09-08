@@ -7,12 +7,11 @@ bot = TeleBot('5485478360:AAGsfep09KeFIEMXiSYFZ4g8Cs0TAOJeE3o')
 last_bot_message = 0
 parser = Parser()
 servise_names, servise_description = parser.get_standart_clean_info()
-print(servise_names)
 
 return_main_markup_button = InlineKeyboardButton('Главное меню', callback_data='menu')
 main_menu_markup = InlineKeyboardMarkup(row_width=2)
-service_button_description = InlineKeyboardButton('Наши услуги', callback_data='service')
-reviews_button = InlineKeyboardButton('отзывы', call_data='reviews')
+service_button_description = InlineKeyboardButton('Базовые услуги', callback_data='service')
+reviews_button = InlineKeyboardButton('Отзывы', call_data='reviews')
 main_menu_markup.row(service_button_description, reviews_button)
 
 
