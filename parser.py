@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
-
+import httplib2
 
 class Parser:
 
@@ -53,10 +53,12 @@ class Parser:
             description = descriptions[i].get_text().replace('/n', '').strip()
             cleaners_array.append([name, img, experience, description])
 
-    def download_cleaner_photo(self, name, url):
+    def download_cleaner_photo(name, url):
         img_url = f"https://cleanny.by{url}"
-        img_data = requests.get(img_url).content
+        h = httplib2.Http('.cache')
+        response, content = h.request(img_url)
         holder_path = os.path.abspath(__file__).rpartition("\\")[0]
-        cleaner_img_path = holder_path + f"\\Images\\{name}.jpg"
-        with open(cleaner_img_path, "wb") as img:
-            img.write(img_data)
+        cleaner_img_path = holder_path + f"\\{name}.jpg"
+        out = open(cleaner_img_path, "wb")
+        out.write(content)
+        out.close()
