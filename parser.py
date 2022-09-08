@@ -1,6 +1,5 @@
 import os
-
-import requests
+from os import path
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -54,12 +53,32 @@ class Parser:
             cleaners_array.append([name, img_path, experience, description])
 
     def download_cleaner_photo(name, url):
+        holder_path = os.path.abspath(__file__).rpartition("\\")[0]
+        if not os.path.exists(f"{holder_path}\\Cleaners_photo"):
+            os.mkdir(f"{holder_path}\\Cleaners_photo")
+
         img_url = f"https://cleanny.by{url}"
         h = httplib2.Http('.cache')
         response, content = h.request(img_url)
-        holder_path = os.path.abspath(__file__).rpartition("\\")[0]
-        cleaner_img_path = holder_path + f"\\{name}.jpg"
+        cleaner_img_path = holder_path + f"\\Cleaners_photo\\{name}.jpg"
         out = open(cleaner_img_path, "wb")
         out.write(content)
         out.close()
         return cleaner_img_path
+
+    def collect_reviews(self):
+        holder_path = os.path.abspath(__file__).rpartition("\\")[0]
+        if not os.path.exists(f"{holder_path}\\reviews"):
+            os.mkdir(f"{holder_path}\\reviews")
+
+        reviews_html = self.soup.find(class_="reviewsCarousel owl-carousel owl-loaded owl-drag").find_all(class_="owl-item")
+        for i in range(len(reviews_html)):
+            review = reviews_html[i].find(class_="item")
+            review_url = review.find("img")["src"]
+            img_url = f"https://cleanny.by{review_url}"
+            h = httplib2.Http('.cache')
+            response, content = h.request(img_url)
+            review_img_path = holder_path + f"\\reviews\\{i}review.jpg"
+            out = open(review_img_path, "wb")
+            out.write(content)
+            out.close()
