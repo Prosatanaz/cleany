@@ -1,7 +1,7 @@
 import telebot
 import re
 from services import ServicesManager
-from sheets_reader import get_services_data_from_sheet
+import sheets_reader
 from tg_order_service import *
 from tg_messenger import TgMessenger
 from tg_messenger import BUTTON_VALUE_SEPARATOR
@@ -26,8 +26,8 @@ def start_tg_bot():
         callback_data = call.data
 
         if callback_data == "order_new":
-            ServicesManager.set_basic_service(tabel=[["tabel", "header"], [65, 3]])
-            ServicesManager.set_extra_services(tabel=get_services_data_from_sheet())
+            ServicesManager.set_basic_service(tabel=sheets_reader.get_basic_service_data())
+            ServicesManager.set_extra_services(tabel=sheets_reader.get_extra_services_data())
             message_id = messenger.send_basic_service(user_id)
             create_order(user_id, message_id)
 
