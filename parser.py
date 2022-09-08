@@ -48,10 +48,10 @@ class Parser:
         for i in range(len(names)):
             name = names[i].find("span").get_text().replace('/n', '').strip()
             img = imgs[i]["src"]
-            self.download_cleaner_photo(name, img)
+            img_path = self.download_cleaner_photo(name, img)
             experience = experiences[i].get_text().replace('/n', '').strip()
             description = descriptions[i].get_text().replace('/n', '').strip()
-            cleaners_array.append([name, img, experience, description])
+            cleaners_array.append([name, img_path, experience, description])
 
     def download_cleaner_photo(name, url):
         img_url = f"https://cleanny.by{url}"
@@ -62,3 +62,4 @@ class Parser:
         out = open(cleaner_img_path, "wb")
         out.write(content)
         out.close()
+        return cleaner_img_path
