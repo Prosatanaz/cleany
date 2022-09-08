@@ -1,10 +1,12 @@
-import telebot
 import re
-from services import ServicesManager
+
+import telebot
+
 import sheets_reader
-from tg_order_service import *
-from tg_messenger import TgMessenger
+from services import ServicesManager
 from tg_messenger import BUTTON_VALUE_SEPARATOR
+from tg_messenger import TgMessenger
+from tg_order_service import *
 
 
 def start_tg_bot():
