@@ -25,13 +25,13 @@ class paymentManager:
         pay_url =  quickpay.base_url      
         return pay_url        
 
-def check_status_operation(self, client_id, order_data):
-    history = self.client.operation_history(label=client_id + order_data)
-    #находим операции по фильтру label
-    for operation in history.operations:
-        operation_id = operation.operation_id
-        operation_status =  operation.status
-    return operation_status, operation_id
+    def check_status_operation(self, client_id, order_data):
+        history = self.client.operation_history(label=client_id + order_data)
+        #находим операции по фильтру label
+        for operation in history.operations:
+            operation_id = operation.operation_id
+            operation_status =  operation.status
+        return operation_status, operation_id
 
 
 

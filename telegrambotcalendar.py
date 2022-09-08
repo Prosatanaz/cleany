@@ -22,7 +22,9 @@ def start(message):
 @bot.callback_query_handler(func=WMonthTelegramCalendar.func())
 def cal(c):
     result, key, step = WMonthTelegramCalendar().process(c.data)
-   
+    print(result)
+    print(key)
+    print(step)
     if not result and key:
         bot.edit_message_text("выберите дату заказа", c.message.chat.id, c.message.message_id, reply_markup=key)
     elif result:
@@ -33,7 +35,7 @@ def cal(c):
 def query_handler(call):
     bot.answer_callback_query(callback_query_id=call.id,)
     check_time(call)
-
+# добавить в поле start_time
 def check_time(call):
     if call.data == call.data:
         print(call.data)

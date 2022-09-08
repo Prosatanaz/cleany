@@ -44,13 +44,9 @@ def write_adress(id):
 def check_adress(message):
     next_step = bot.send_message(message.chat.id, ' это ваш адрес? ',reply_markup= markup_check_adress)
 
-    
+
 #нужно положить adress в order
-def confirm_adres(message):
-    if message.text == 'да':
-        bot.register_next_step_handler(message.text,poel_govna)
-    elif message.text =='нет':
-        bot.register_next_step_handler(message.text, write_adress)  
+
 
 #конечный метод        
 def poel_govna():
@@ -64,9 +60,9 @@ def query_handler(call):
     if call.data == 'нет':
         write_number(call.message.chat.id)
     if call.data == 'да1':
-        write_adress(call.message.chat.id)
+        poel_govna()
     if call.data == 'нет1':
-        write_number(call.message.chat.id)
+        write_adress(call.message.chat.id)
              
 
 print('rdy')
