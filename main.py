@@ -14,7 +14,7 @@ options = Options()
 options.headless = True
 browser = webdriver.Firefox(options=options, executable_path=GeckoDriverManager().install(), )
 browser.get(url)
-soup = BeautifulSoup(browser.page_source, 'html.parser')
+soup = BeautifulSoup(browser.page_source, 'html.parser.py')
 browser.close()
 ###поиск клинеров
 cleaners = soup.find('div', 'cleaners')
