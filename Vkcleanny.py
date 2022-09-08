@@ -1,14 +1,13 @@
 import glob
-import time
+import json
+import os
 
+import gspread
+import vk_api
 from vk_api import VkApi
-from vk_api.utils import get_random_id
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-import json
-import gspread
-import os
-import vk_api
+from vk_api.utils import get_random_id
 
 def return_start_point_vk():
     return 'VK'
@@ -36,13 +35,14 @@ def start_vk_bot():
     vk = vk_session.get_api()
     longpoll = VkBotLongPoll(vk_session, group_id=GROUP_ID)
 
-    settings = dict(one_time=False, inline = False)
+    settings = dict(one_time=False, inline=False)
     keyboard_start = VkKeyboard(**settings)
     keyboard_start.add_button(label='Запустить бота!', color=VkKeyboardColor.POSITIVE, payload={"type": "Старт"})
 
     holder_path = os.path.abspath(__file__).rpartition("\\")[0]
     gc = gspread.service_account(f"{holder_path}\clinny-361618-f313b3437739.json")
-    worksheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=0")
+    worksheet = gc.open_by_url(
+       "https://docs.google.com/spreadsheets/d/115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=0")
 
 
     def get_base_clean_info():

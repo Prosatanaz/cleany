@@ -1,4 +1,3 @@
-import imp
 from tgbot import start_tg_bot, return_start_point_tg
 from Vkcleanny import return_start_point_vk, start_vk_bot
 

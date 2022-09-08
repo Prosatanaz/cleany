@@ -1,11 +1,12 @@
 import os
-from os import path
+
+import gspread
+import httplib2
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
-import httplib2
-import gspread
+
 
 class Parser:
     def __init__(self):
@@ -77,7 +78,8 @@ class Parser:
         if not os.path.exists(f"{self.holder_path}\\reviews"):
             os.mkdir(f"{self.holder_path}\\reviews")
 
-        reviews_html = self.soup.find(class_="reviewsCarousel owl-carousel owl-loaded owl-drag").find_all(class_="owl-item")
+        reviews_html = self.soup.find(class_="reviewsCarousel owl-carousel owl-loaded owl-drag").find_all(
+            class_="owl-item")
         reviews = []
         for i in range(len(reviews_html)):
             review = reviews_html[i].find(class_="item")
@@ -90,7 +92,6 @@ class Parser:
             out.write(content)
             out.close()
             reviews.append(review_img_path)
-
 
     @classmethod
     def set_standart_clean_info_gsheet(self, clean_zones, clean_zones_description):
@@ -106,5 +107,3 @@ class Parser:
         cleaners_sheet.append_row(["Имя", "Фото", "Стаж", "Описание"])
         for i in cleaners:
             cleaners_sheet.append_row(i)
-
-
