@@ -8,6 +8,10 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
+from graphicls_calendar import GoogleCalendar
+import payment_manager
+
+print(payment_manager.paymentManager().get_pay_url(4, 45, 245))
 
 url = "https://cleanny.by/"
 options = Options()
@@ -38,7 +42,7 @@ print(kitchen.text)
 koridor = standart.find('div','koridor').find('div','inside')
 print(koridor.text)
 
-
+calendar = GoogleCalendar()
 #print(soup.text)
 
 

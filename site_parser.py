@@ -8,7 +8,6 @@ import httplib2
 import gspread
 
 class Parser:
-
     def __init__(self):
         url = "https://cleanny.by/"
         options = Options()
@@ -107,4 +106,5 @@ class Parser:
         cleaners_sheet.append_row(["Имя", "Фото", "Стаж", "Описание"])
         for i in cleaners:
             cleaners_sheet.append_row(i)
+
 
