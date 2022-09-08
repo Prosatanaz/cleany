@@ -53,7 +53,7 @@ def draw_clock_buttons(keyboard, hour,result):
 
     full_time_button = InlineKeyboardButton(str(hour) + SEPARATOR_BUTTON +'00',callback_data= str(result) + '-' + str(hour) + SEPARATOR_BUTTON +'00')
     if hour !=18:
-        half_time_button = InlineKeyboardButton(str(hour) + SEPARATOR_BUTTON +'30',callback_data=str(result) + '-' +  str(hour) + SEPARATOR_BUTTON +'00')
+        half_time_button = InlineKeyboardButton(str(hour) + SEPARATOR_BUTTON +'30',callback_data=str(result) + '-' +  str(hour) + SEPARATOR_BUTTON +'30')
         keyboard.row(full_time_button, half_time_button)
     else:
         keyboard.row(full_time_button)
