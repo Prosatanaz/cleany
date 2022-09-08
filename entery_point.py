@@ -1,4 +1,4 @@
-from tgbot import start_tg_bot
+from tg_bot import start_tg_bot
 
 BOT_TYPE = "TG"
 

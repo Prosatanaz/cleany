@@ -1,17 +1,17 @@
 import glob
-import time
+import json
+import os
 
+import gspread
+import vk_api
 from vk_api import VkApi
-from vk_api.utils import get_random_id
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-import json
-import gspread
-import os
-import vk_api
+from vk_api.utils import get_random_id
 
 GROUP_ID = '215429808'
-GROUP_TOKEN = 'vk1.a.-OoF4Nyf_mvkHPLzJA4X_1npTgwmNNartyqUQAPculjCrmjUmjUgw9-IaJEomxOq3xuwqwvkRJHRPLaagmJPPx1O8AG9NSftAa0mgfPKkKOaJxfzdcS35IJhHdG3P4dy4yw7ak_h9bGuQkHkE2_3xq2G5dffG_q74AO-pcEbI9ISrXp2frwCfFOD314Blz1d'
+GROUP_TOKEN = 'vk1.a.-OoF4Nyf_mvkHPLzJA4X_1npTgwmNNartyqUQAPculjCrmjUmjUgw9-IaJEomxOq3xuwqwvkRJHRPLaagmJPPx1O8AG9NSf' \
+              'tAa0mgfPKkKOaJxfzdcS35IJhHdG3P4dy4yw7ak_h9bGuQkHkE2_3xq2G5dffG_q74AO-pcEbI9ISrXp2frwCfFOD314Blz1d'
 API_VERSION = '5.130'
 
 HI = []
@@ -31,13 +31,14 @@ vk_session = VkApi(token=GROUP_TOKEN, api_version=API_VERSION)
 vk = vk_session.get_api()
 longpoll = VkBotLongPoll(vk_session, group_id=GROUP_ID)
 
-settings = dict(one_time=False, inline = False)
+settings = dict(one_time=False, inline=False)
 keyboard_start = VkKeyboard(**settings)
 keyboard_start.add_button(label='Запустить бота!', color=VkKeyboardColor.POSITIVE, payload={"type": "Старт"})
 
 holder_path = os.path.abspath(__file__).rpartition("\\")[0]
 gc = gspread.service_account(f"{holder_path}\clinny-361618-f313b3437739.json")
-worksheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=0")
+worksheet = gc.open_by_url(
+    "https://docs.google.com/spreadsheets/d/115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=0")
 
 
 def get_base_clean_info():
@@ -63,9 +64,11 @@ def get_cleaners_info():
         experiences.append(i[2])
         descriptions.append(i[3])
 
-    return  cleaners_info
+    return cleaners_info
+
 
 cleaners_info = get_cleaners_info()
+
 
 def generate_main_keyboard():
     settings = dict(one_time=False, inline=False)
@@ -74,14 +77,20 @@ def generate_main_keyboard():
     keyboard_menu.add_line()
     keyboard_menu.add_button(label="Наши работницы", color=VkKeyboardColor.SECONDARY)
     keyboard_menu.add_line()
-    keyboard_menu.add_callback_button(label="Контакты администратора", color=VkKeyboardColor.SECONDARY, payload={"type": "open_link", "link": "https://rt.pornhub.com/pornstar/johnny-sins"})
+    keyboard_menu.add_callback_button(label="Контакты администратора", color=VkKeyboardColor.SECONDARY,
+                                      payload={"type": "open_link",
+                                               "link": "https://rt.pornhub.com/pornstar/johnny-sins"})
     keyboard_menu.add_line()
-    keyboard_menu.add_callback_button(label="Мы в телеграм!", color=VkKeyboardColor.SECONDARY, payload={"type": "open_link", "link": "https://t.me/cleanytestbot"})
+    keyboard_menu.add_callback_button(label="Мы в телеграм!", color=VkKeyboardColor.SECONDARY,
+                                      payload={"type": "open_link", "link": "https://t.me/cleanytestbot"})
     keyboard_menu.add_line()
-    keyboard_menu.add_callback_button(label="Отзывы о нашей работе", color=VkKeyboardColor.SECONDARY, payload={"type": "reviews"})
+    keyboard_menu.add_callback_button(label="Отзывы о нашей работе", color=VkKeyboardColor.SECONDARY,
+                                      payload={"type": "reviews"})
     return keyboard_menu
 
+
 main_keyboard = generate_main_keyboard()
+
 
 def generate_base_clean_keyboard():
     settings = dict(one_time=False, inline=False)
@@ -89,11 +98,13 @@ def generate_base_clean_keyboard():
     clean_zones, T = get_base_clean_info()
     for i in clean_zones:
         keyboard_clean_zones.add_callback_button(label=i, color=VkKeyboardColor.SECONDARY,
-                                        payload={"type": f"${i}"})
+                                                 payload={"type": f"${i}"})
         keyboard_clean_zones.add_line()
 
-    keyboard_clean_zones.add_callback_button(label="Назад к меню", color=VkKeyboardColor.PRIMARY, payload={"type": "back_menu"})
-    return  keyboard_clean_zones
+    keyboard_clean_zones.add_callback_button(label="Назад к меню", color=VkKeyboardColor.PRIMARY,
+                                             payload={"type": "back_menu"})
+    return keyboard_clean_zones
+
 
 def generate_cleaners_markup():
     settings = dict(one_time=False, inline=False)
@@ -104,7 +115,7 @@ def generate_cleaners_markup():
         keyboard_cleaners.add_line()
 
     keyboard_cleaners.add_callback_button(label="Назад к меню", color=VkKeyboardColor.PRIMARY,
-                                             payload={"type": "back_menu"})
+                                          payload={"type": "back_menu"})
     return keyboard_cleaners
 
 
@@ -119,12 +130,12 @@ def send_reviews(event):
         vk.messages.send(peer_id=event.object.peer_id, random_id=0, attachment=attachment)
 
 
-
 def get_base_clean_descr(zone):
     clean_zones, clean_zones_description = get_base_clean_info()
     for i in range(len(clean_zones)):
         if clean_zones[i] == zone:
             return clean_zones_description[i]
+
 
 def get_cleaner_description(name):
     cleaner_info = []
@@ -153,12 +164,11 @@ def send_message(event, text, keyboard):
             message=text)
     else:
         vk.messages.send(
-        user_id=event.obj.message['from_id'],
-        random_id=get_random_id(),
-        peer_id=event.obj.message['from_id'],
-        keyboard = keyboard.get_keyboard(),
-        message=text)
-
+            user_id=event.obj.message['from_id'],
+            random_id=get_random_id(),
+            peer_id=event.obj.message['from_id'],
+            keyboard=keyboard.get_keyboard(),
+            message=text)
 
 
 for event in longpoll.listen():
@@ -172,7 +182,8 @@ for event in longpoll.listen():
                     send_message(event, "Вас приветствует бот cleanny.by!", main_keyboard)
 
                 elif event.obj.message["text"] == "Базовая уборка":
-                    send_message(event, "Здесь вы можете посмотреть, что входит в базовую уборку:", generate_base_clean_keyboard())
+                    send_message(event, "Здесь вы можете посмотреть, что входит в базовую уборку:",
+                                 generate_base_clean_keyboard())
 
                 elif event.obj.message["text"] == "Наши работницы":
                     send_message(event, "Наши работницы: ", generate_cleaners_markup())
@@ -218,7 +229,7 @@ for event in longpoll.listen():
                 keyboard=generate_cleaners_markup().get_keyboard(),
                 message=f"{experience}\n{description}")
 
-        if event.object.payload.get("type")  == "reviews":
+        if event.object.payload.get("type") == "reviews":
             send_reviews(event)
 
         if event.object.payload.get("type") == "back_menu":
