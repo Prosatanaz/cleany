@@ -75,7 +75,7 @@ class Parser:
         out.close()
 
     def collect_reviews(self):
-        if not os.path.exists(f"{holder_path}\\reviews"):
+        if not os.path.exists(f"{self.holder_path}\\reviews"):
             os.mkdir(f"{self.holder_path}\\reviews")
 
         reviews_html = self.soup.find(class_="reviewsCarousel owl-carousel owl-loaded owl-drag").find_all(class_="owl-item")
@@ -92,7 +92,6 @@ class Parser:
             out.close()
             reviews.append(review_img_path)
 
-        self.set_reviews_gs(reviews)
 
     @classmethod
     def set_standart_clean_info_gsheet(self, clean_zones, clean_zones_description):
@@ -109,10 +108,3 @@ class Parser:
         for i in cleaners:
             cleaners_sheet.append_row(i)
 
-    @classmethod
-    def set_reviews_gs(self, reviews):
-        reviews_sheet = self.worksheet.get_worksheet(2)
-        reviews_sheet.clear()
-        reviews_sheet.append_row(["Отзывы"])
-        for i in reviews:
-            reviews_sheet.append_row([i])
