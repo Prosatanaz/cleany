@@ -1,34 +1,73 @@
 import telebot
 import re
-from order_service import *
-
-bot = telebot.TeleBot('5612156914:AAEiFzNR0KVrvYDE7OjnSbjiKJrtPCwW_N8')
-
-
-@bot.message_handler(content_types=['text'])
-def start(message):
-    if message.text == '/start':
-        
-        msg =  bot.send_message(message.chat.id,"hi", reply_markup=generate_calc_keyboard())
-        form_list_to_send(message.chat.id, msg)
-
-    elif message.text == '/calendar':
-       calendar, step = DetailedTelegramCalendar().build()
-
-       bot.send_message(message.chat.id,f'Select {LSTEP[step]}',reply_markup=calendar)
+from services import ServicesManager
+from sheets_reader import get_services_data_from_sheet
+from tg_order_service import *
+from tg_messenger import TgMessenger
+from tg_messenger import BUTTON_VALUE_SEPARATOR
 
 
-@bot.callback_query_handler(func=lambda call: True)
-def query_handler(call):
-    bot.answer_callback_query(callback_query_id=call.id)
-    user_id = call.message.chat.id
-    user_answer = call.data
+def start_tg_bot():
+    print("start bot for Telegram")
+    bot = telebot.TeleBot('5612156914:AAEiFzNR0KVrvYDE7OjnSbjiKJrtPCwW_N8')
+    messenger = TgMessenger(bot)
 
-    if re.match(f"[+-]{BUTTON_VALUE_SEPARATOR}\d+", user_answer):
-        add_remove_buttons_handler(user_id=user_id, user_answer=user_answer)
-    elif user_answer == "cancel":
-        cancel_order(bot, user_id)
+    @bot.message_handler(content_types=['text'])
+    def start(message):
+        user_id = message.chat.id
+        if message.text == '/start':
+            messenger.send_start(user_id)
 
+    @bot.callback_query_handler(func=lambda call: True)
+    def query_handler(call):
+        bot.answer_callback_query(callback_query_id=call.id)
+        user_id = call.message.chat.id
+        message_id = call.message.message_id
+        callback_data = call.data
 
-print("Ready")
-bot.infinity_polling()
+        if callback_data == "order_new":
+            ServicesManager.set_basic_service(tabel=[["tabel", "header"], [65, 3]])
+            ServicesManager.set_extra_services(tabel=get_services_data_from_sheet())
+            message_id = messenger.send_basic_service(user_id)
+            create_order(user_id, message_id)
+
+        elif re.match(f"[+-]{BUTTON_VALUE_SEPARATOR}\d+", callback_data):
+            add_remove_extra_service_buttons_handler(user_id=user_id, callback_data=callback_data)
+            order = OrdersManager.get_order(user_id)
+            messenger.edit_to_extra_services(order)
+
+        elif callback_data == "continue":
+            continue_button_handler(user_id)
+
+        elif callback_data == "return":
+            return_button_handler(user_id)
+
+        elif callback_data == "cancel":
+            messenger.delete_message(user_id, message_id)
+            delete_order(user_id)
+
+    def continue_button_handler(user_id):
+        order = OrdersManager.get_order(user_id)
+        print(f"order_stage - {order.stage.name}")
+        messenger.edit_to_stage(order, order.get_next_stage())
+
+    def return_button_handler(user_id):
+        order = OrdersManager.get_order(user_id)
+        messenger.edit_to_stage(order, order.get_previous_stage())
+
+    def add_remove_extra_service_buttons_handler(user_id, callback_data):
+        # callback consists of 2 parts - is needed to add or remove service and service id
+        splitted_user_answer = callback_data.split(BUTTON_VALUE_SEPARATOR)
+        is_add = splitted_user_answer[0] == "+"
+        service_id = splitted_user_answer[1]
+
+        order = OrdersManager.get_order(user_id)
+        service = ServicesManager.get_service(service_id)
+
+        if is_add:
+            order.add_service(service)
+        else:
+            order.remove_service(service)
+
+    print("Ready")
+    bot.infinity_polling()
