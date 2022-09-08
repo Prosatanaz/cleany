@@ -44,6 +44,13 @@ def get_services_data_from_sheet():
                                     '115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=480424214')
     return calc_sheet_url.get_worksheet(4).get_all_values()
 
+def get_services_data_from_sheet2():
+    gc = gspread.service_account(filename="clinny-361618-f313b3437739.json")
+    calc_sheet_url = gc.open_by_url('https://docs.google.com/spreadsheets/d/'
+                                    '115gY9pcQghGnjV5FLfnDZELuTu6invP72rK40sb3em8/edit#gid=480424214')
+    base_info = calc_sheet_url.get_worksheet(5).get_all_values()[1:]
+    return base_info
+
 
 def take_order(bot, user_id):
     message_text = "Приветствуем в нашем сервисе клинига \"Нежные пальчики\""
